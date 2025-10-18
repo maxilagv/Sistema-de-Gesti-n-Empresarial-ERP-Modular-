@@ -214,7 +214,7 @@ npm run dev
 
 Luego integrar la estructura existente (estilos, páginas, componentes) y apuntar el cliente a `http://localhost:8080` para la API. Considerar almacenar el `API_BASE_URL` en `.env`.
 
-## Roadmap sugerido
+## Roadmap (proximamente)
 
 - Persistencia en PostgreSQL + migraciones con Flyway
 - Módulos adicionales: inventario, compras, contabilidad, RR.HH., CRM
@@ -223,13 +223,4 @@ Luego integrar la estructura existente (estilos, páginas, componentes) y apunta
 - CI/CD (GitHub Actions), calidad (linters, coverage thresholds)
 - Frontend completo: rutas protegidas, formularios, tablas y gráficos
 
-## Contribución
-
-1) Crear rama feature: `git checkout -b feature/nombre`
-2) Commit atómico y con contexto
-3) Pull Request con descripción y checklist
-
-## Licencia
-
-Por definir. Si deseas, puedo añadir una licencia (MIT/Apache-2.0) en este repositorio.
 
