@@ -1,0 +1,178 @@
+/*
+  globalStyles.css — Base universal y coherencia
+  - Reset/normalización
+  - Tipografía base
+  - Layout general y sistema de espaciado
+  - Comportamiento de scroll, selección, focus y transiciones
+  - Patrones clave (botones, inputs, tarjetas, tablas, modales)
+  Nota: todas las variables provienen de theme.css
+*/
+
+/* ========== Reset moderno ========== */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html, body, #root { height: 100%; }
+img, picture, video, canvas, svg { display: block; max-width: 100%; }
+input, button, textarea, select { font: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+/* Evita saltos de layout por scrollbars */
+html { overflow-y: scroll; }
+
+/* ========== Tipografía y color base ========== */
+html {
+  /* Contraste y optimizaciones de render */
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  color-scheme: light dark;
+}
+
+body {
+  font-family: Inter, Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  accent-color: var(--color-primary);
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Layout y espaciado ========== */
+.app-shell {
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+  padding-block: var(--space-6);
+}
+
+.row { display: flex; align-items: center; }
+.gap-xs { gap: var(--space-2); }
+.gap-sm { gap: var(--space-3); }
+.gap-md { gap: var(--space-4); }
+.gap-lg { gap: var(--space-6); }
+
+/* ========== Interacciones globales ========== */
+::selection {
+  background: color-mix(in oklab, var(--color-primary) 24%, transparent);
+  color: var(--text-primary);
+}
+
+/* Focus accesible y consistente */
+:where(a, button, input, textarea, select, [tabindex]) :focus { outline: none; }
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Transiciones sutiles por defecto */
+html {
+  --_transition: color var(--transition-fast) ease, background-color var(--transition-fast) ease,
+                  border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+:where(a, button, input, textarea, select, .card) { transition: var(--_transition); }
+
+/* Scrollbars coherentes */
+* { scrollbar-gutter: stable both-edges; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+*::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 8px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+/* ========== Elementos y patrones base ========== */
+a { color: var(--link); text-decoration: none; }
+a:hover { color: var(--link-hover); }
+
+.muted { color: var(--text-secondary); }
+
+/* Tarjetas: módulos independientes sin bordes visibles */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-5);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Botones: rectos, tipografía firme, acento estratégico */
+.btn {
+  --_bg: var(--color-surface);
+  --_fg: var(--text-primary);
+  --_bd: var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--space-2) + 2px) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--_bd);
+  background: var(--_bg);
+  color: var(--_fg);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.btn:hover { filter: brightness(1.02); }
+.btn:active { transform: translateY(0.5px); }
+
+.btn--primary {
+  --_bg: var(--color-primary);
+  --_fg: #fff;
+  --_bd: var(--color-primary);
+}
+.btn--primary:hover { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
+.btn--ghost { background: transparent; border-color: var(--border-subtle); }
+
+/* Inputs: limpios, borde tenue y focus azul suave */
+.input, input[type="text"], input[type="email"], input[type="password"], select, textarea {
+  width: 100%;
+  background: var(--color-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+}
+.input:focus, input:focus, select:focus, textarea:focus {
+  border-color: color-mix(in oklab, var(--color-primary) 35%, var(--border-subtle));
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 18%, transparent);
+}
+
+/* Tablas: líneas finas, zebra sutil */
+.table { width: 100%; border-collapse: collapse; background: var(--color-surface); }
+.table th, .table td { padding: var(--space-3) var(--space-4); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+.table thead th { color: var(--text-secondary); font-weight: 600; letter-spacing: .02em; }
+.table tbody tr:nth-child(even) { background: var(--table-zebra-bg); }
+.table tbody tr:hover { background: var(--table-hover-bg); }
+
+/* Modales y backdrop */
+.backdrop {
+  position: fixed; inset: 0; background: var(--backdrop);
+  display: grid; place-items: center; padding: var(--space-6);
+}
+.modal { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-lg); border: 1px solid var(--border-subtle); max-width: 720px; width: 100%; }
+
+/* Utilidades de visibilidad */
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* Títulos y jerarquía */
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: .005em; color: var(--text-primary); margin-bottom: var(--space-3); }
+h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: .005em; color: var(--text-primary); margin-bottom: var(--space-3); }
+h3 { font-size: 1.25rem; font-weight: 600; letter-spacing: .005em; color: var(--text-primary); margin-bottom: var(--space-2); }
+
+/* Responsivo: respiración extra en pantallas grandes */
+@media (min-width: 1024px) {
+  .container { padding-inline: var(--space-7); padding-block: var(--space-7); }
+  h1 { font-size: 2.25rem; }
+}

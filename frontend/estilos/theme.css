@@ -1,0 +1,121 @@
+/*
+  theme.css — Identidad visual (tokens de diseño)
+  - Variables de color, tipografía, radios, sombras, transiciones
+  - Paleta completa + estados
+  - Modos claro/oscuro con :root y [data-theme="dark"]
+  - Breakpoints y espaciados (sistema de 8px)
+*/
+
+/* ========== Tokens base: modo claro ========== */
+:root {
+  /* Paleta — neutralidad con acento estratégico */
+  --color-primary: #2563EB;         /* azul profesional */
+  --color-primary-hover: #3B82F6;   /* hover más brillante */
+  --color-primary-active: #1E40AF;
+
+  --color-bg: #F8F9FA;              /* fondo general */
+  --color-surface: #FFFFFF;         /* tarjetas/superficies */
+  --text-primary: #1E1E1E;          /* nunca negro puro */
+  --text-secondary: #6B7280;        /* gris sutil */
+  --link: #2563EB;
+  --link-hover: #1D4ED8;
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --table-zebra-bg: rgba(0, 0, 0, 0.024);
+  --table-hover-bg: rgba(0, 0, 0, 0.035);
+  --backdrop: rgba(0, 0, 0, 0.30);
+
+  /* Scrollbars */
+  --scrollbar-track: rgba(0, 0, 0, 0.045);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.28);
+
+  /* Focus ring */
+  --focus-ring: color-mix(in oklab, var(--color-primary) 45%, transparent);
+
+  /* Tipografía */
+  --font-sans: Inter, Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* Espaciado (8px system) */
+  --space-0: 0rem;       /* 0 */
+  --space-1: 0.5rem;     /* 8 */
+  --space-2: 1rem;       /* 16 */
+  --space-3: 1.5rem;     /* 24 */
+  --space-4: 2rem;       /* 32 */
+  --space-5: 2.5rem;     /* 40 */
+  --space-6: 3rem;       /* 48 */
+  --space-7: 3.5rem;     /* 56 */
+  --space-8: 4rem;       /* 64 */
+
+  /* Bordes y radios */
+  --radius-xs: 4px;
+  --radius-sm: 6px;      /* botones */
+  --radius-md: 8px;
+  --radius-card: 8px;    /* tarjetas */
+
+  /* Sombras y elevaciones */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  /* Transiciones */
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+
+  /* Sidebar */
+  --sidebar-collapsed: 60px;
+  --sidebar-expanded: 220px;
+
+  /* Breakpoints */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  --bp-2xl: 1440px;
+}
+
+/* ========== Modo oscuro explícito ========== */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #0B1220;             /* fondo profundo, sin negro puro */
+  --color-surface: #111827;        /* superficies */
+  --text-primary: #E5E7EB;         /* texto claro */
+  --text-secondary: #94A3B8;       /* gris azulado */
+  --link: #60A5FA;
+  --link-hover: #93C5FD;
+
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --table-zebra-bg: rgba(255, 255, 255, 0.04);
+  --table-hover-bg: rgba(255, 255, 255, 0.06);
+  --backdrop: rgba(0, 0, 0, 0.45);
+
+  --scrollbar-track: rgba(255, 255, 255, 0.06);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.20);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.30);
+  --focus-ring: color-mix(in oklab, var(--color-primary) 55%, transparent);
+}
+
+/* ========== Auto (sin atributo) según el sistema ========== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --color-bg: #0B1220;
+    --color-surface: #111827;
+    --text-primary: #E5E7EB;
+    --text-secondary: #94A3B8;
+    --link: #60A5FA;
+    --link-hover: #93C5FD;
+
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --table-zebra-bg: rgba(255, 255, 255, 0.04);
+    --table-hover-bg: rgba(255, 255, 255, 0.06);
+    --backdrop: rgba(0, 0, 0, 0.45);
+
+    --scrollbar-track: rgba(255, 255, 255, 0.06);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.20);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.30);
+    --focus-ring: color-mix(in oklab, var(--color-primary) 55%, transparent);
+  }
+}
