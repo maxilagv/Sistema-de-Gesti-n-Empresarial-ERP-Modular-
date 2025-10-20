@@ -1,0 +1,65 @@
+version: "3.9"
+services:
+  discovery:
+    build: ./microservices/discovery-server
+    container_name: discovery
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    networks: [erpnet]
+
+  gateway:
+    build: ./microservices/api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+    depends_on:
+      - discovery
+    networks: [erpnet]
+
+  postgres-catalogo:
+    image: postgres:15
+    container_name: postgres-catalogo
+    environment:
+      - POSTGRES_DB=catalogodb
+      - POSTGRES_USER=catalogouser
+      - POSTGRES_PASSWORD=catalogopass
+    ports:
+      - "5433:5432"
+    volumes:
+      - catalogo-data:/var/lib/postgresql/data
+    networks: [erpnet]
+
+  catalogo-service:
+    build: ./microservices/catalogo-service
+    container_name: catalogo-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-catalogo:5432/catalogodb
+      - SPRING_DATASOURCE_USERNAME=catalogouser
+      - SPRING_DATASOURCE_PASSWORD=catalogopass
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - SERVER_PORT=8081
+    depends_on:
+      - discovery
+      - postgres-catalogo
+    networks: [erpnet]
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks: [erpnet]
+
+networks:
+  erpnet:
+    driver: bridge
+
+volumes:
+  catalogo-data:
+
