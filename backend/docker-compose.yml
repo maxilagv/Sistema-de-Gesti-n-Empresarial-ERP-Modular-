@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    container_name: erp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: erpdb
+      POSTGRES_USER: erp
+      POSTGRES_PASSWORD: changeMe!
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp -d erpdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+

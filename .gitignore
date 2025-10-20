@@ -1,0 +1,24 @@
+# Build outputs
+target/
+dist/
+build/
+
+# Node
+node_modules/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*
+

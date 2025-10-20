@@ -1,226 +1,165 @@
-# Sistema de Gestión Empresarial (ERP) Modular
+# ERP Modular (Spring Boot + React)
 
-ERP modular con backend en Spring Boot 3 (Java 17) y un frontend React (esqueleto inicial). Incluye autenticación JWT, gestión de usuarios y roles, CRUD de productos, ventas y generación de facturas con cálculo de impuestos mediante Strategy Pattern. Documentación de API con OpenAPI/Swagger.
+API REST para gestión empresarial (ERP) con backend en Spring Boot 3 (Java 17) y un frontend React (esqueleto). Incluye autenticación JWT, gestión de usuarios/roles, CRUD de productos, ventas y facturación con Strategy Pattern para impuestos. Documentación con OpenAPI/Swagger.
 
 ## Arquitectura
 
-- Monorepo con dos paquetes principales:
-  - `backend/`: API REST con Spring Boot, JPA/Hibernate, autenticación JWT, documentación OpenAPI, perfiles `dev/prod/test`, H2 en memoria para desarrollo y Dockerfile de despliegue.
-  - `frontend/`: Esqueleto de SPA (React + Vite) con estructura base de archivos y estilos. Pendiente de completar dependencias, rutas y vistas.
+- Monorepo con dos paquetes:
+  - `backend/`: API REST (Spring Boot, JPA/Hibernate, Spring Security + JWT, Swagger, perfiles `dev`/`prod`).
+  - `frontend/`: Esqueleto SPA (React + Vite) listo para completar vistas y rutas.
 
-## Funcionalidades clave (backend)
+## Funcionalidades (backend)
 
 - Autenticación y autorización
-  - Login (`POST /api/auth/login`) que entrega un JWT con roles.
-  - Seguridad con `Spring Security`, filtros JWT, CORS abierto en dev, acceso a Swagger/H2 sin autenticación.
-- Gestión de usuarios (rol `ADMIN` requerido)
-  - CRUD de usuarios (`/api/usuarios`). Contraseñas hasheadas con BCrypt.
-- Gestión de productos
-  - CRUD paginado (`/api/productos`). Atributos: nombre, precio, exento de impuesto.
+  - `POST /api/auth/login` entrega JWT con roles.
+  - Seguridad centralizada en Spring Security y filtro JWT; Swagger y H2 abiertos en `dev`.
+- Usuarios (ADMIN)
+  - CRUD en `/api/usuarios` con contraseñas en BCrypt.
+- Productos
+  - CRUD paginado en `/api/productos` (crear/editar/eliminar requieren ADMIN).
 - Ventas y facturación
-  - Registro de ventas y generación de factura (`/api/ventas/facturar`).
-  - Strategy Pattern para cálculo de impuestos (`19%` normal o exento).
+  - `POST /api/ventas/facturar` genera factura y calcula impuestos por estrategia.
 - Observabilidad y DX
-  - OpenAPI/Swagger UI en `GET /swagger-ui.html`.
-  - Consola H2 en `GET /h2-console` (solo perfil `dev`).
+  - Swagger UI en `/swagger-ui.html`.
+  - Consola H2 en `/h2-console` (perfil `dev`).
 
-## Estructura del repositorio
+## Estructura
 
 ```
 proyecto-Java/
 ├─ backend/
 │  ├─ pom.xml
 │  ├─ Dockerfile
+│  ├─ docker-compose.yml
 │  └─ src/
-│     ├─ main/
-│     │  ├─ java/com/example/erp/
-│     │  │  ├─ ErpApplication.java
-│     │  │  ├─ config/ (SecurityConfig, SwaggerConfig)
-│     │  │  ├─ controllers/ (Auth, Producto, Usuario, Venta, Factura)
-│     │  │  ├─ dto/ (Auth, producto, usuario, venta, factura)
-│     │  │  ├─ entities/ (Usuario, Producto, Venta, Factura, Empleado)
-│     │  │  ├─ exceptions/ (GlobalExceptionHandler, ResourceNotFoundException)
-│     │  │  ├─ repositories/ (JPA repositories)
-│     │  │  ├─ security/ (JwtAuthFilter, JwtTokenProvider, UserDetailsServiceImpl)
-│     │  │  ├─ services/ (UsuarioService, ProductoService, VentaService, CalculoImpuestoService)
-│     │  │  └─ tax/ (ImpuestoStrategy, Normal, Exento)
-│     │  └─ resources/
-│     │     ├─ application.properties (perfil activo: dev)
-│     │     ├─ application-dev.properties (H2 en memoria)
-│     │     └─ application-prod.properties (placeholders para prod)
-│     └─ test/ (unitarios e integración; perfil `test` con H2)
-└─ frontend/
-   ├─ Punto de Entrada/ (index.html, main.jsx)
-   ├─ estilos/ (theme.css, globalStyles.css)
-   ├─ paginas/, estructura/, ComponentesdeUI/, ServiciosAPI/
-   └─ Config. y Dependencias/ (package.json, vite.config.js — placeholders)
+│     ├─ main/java/com/example/erp/
+│     │  ├─ config/ (SecurityConfig, SwaggerConfig)
+│     │  ├─ controllers/ (Auth, Producto, Usuario, Venta, Factura)
+│     │  ├─ dto/ (Auth, producto, usuario, venta, factura)
+│     │  ├─ entities/ (Usuario, Producto, Venta, Factura, ...)
+│     │  ├─ exceptions/ (GlobalExceptionHandler, ResourceNotFoundException)
+│     │  ├─ repositories/ (JPA repositories)
+│     │  ├─ security/ (JwtAuthFilter, JwtTokenProvider, UserDetailsServiceImpl)
+│     │  └─ services/ (UsuarioService, ProductoService, VentaService, ...)
+│     └─ main/resources/
+│        ├─ application.properties (perfil activo)
+│        ├─ application-dev.properties (H2 en memoria)
+│        └─ application-prod.properties (placeholders y Flyway)
+└─ frontend/ (esqueleto React + Vite)
 ```
 
 ## Tecnologías
 
-- Java 17, Spring Boot 3.3, Spring Security, Spring Data JPA
-- JWT (jjwt), H2 (dev/test), OpenAPI (springdoc)
-- Maven, JUnit, Jacoco
-- Docker (eclipse-temurin:17-jre)
-- Frontend (esqueleto): React + Vite + CSS utilitario (pendiente de completar)
+- Java 17, Spring Boot 3.x, Spring Security, Spring Data JPA
+- JWT (jjwt), H2 (dev), PostgreSQL (prod), OpenAPI (springdoc)
+- Maven, JUnit
+- Docker
+- React + Vite (frontend esqueleto)
 
-## Requisitos previos
+## Requisitos
 
 - Java 17 y Maven 3.9+
-- Docker (opcional, para contenedores)
-- Node.js 18+ y npm (opcional, para el frontend)
+- Docker (opcional para DB/productivo)
+- Node.js 18+ (opcional para frontend)
 
-## Configuración y ejecución (backend)
+## Puesta en marcha (backend)
 
-Variables y puertos relevantes:
-
-- `server.port=8080`
-- Swagger UI: `GET http://localhost:8080/swagger-ui.html`
-- H2 console (dev): `GET http://localhost:8080/h2-console` — JDBC URL: `jdbc:h2:mem:erpdb`
-- JWT
-  - `jwt.secret` (mín. 32 bytes). En `dev` viene definido; en `prod` se debe inyectar por env: `JWT_SECRET`.
-  - `jwt.expiration-ms=3600000` (1 hora).
-
-Ejecutar en desarrollo (perfil `dev` por defecto):
+Desarrollo (perfil `dev` por defecto):
 
 ```
 cd backend
 mvn spring-boot:run
 ```
 
-Build del JAR:
+Swagger: `http://localhost:8080/swagger-ui.html`
+H2 Console (dev): `http://localhost:8080/h2-console`
+
+Producción (con PostgreSQL + Flyway):
+
+1) Iniciar base de datos (ver `backend/docker-compose.yml`).
+2) Exportar variables de entorno requeridas (ver sección Configuración) y arrancar con `SPRING_PROFILES_ACTIVE=prod`.
 
 ```
 cd backend
 mvn -DskipTests package
-java -jar target/erp-backend-0.0.1-SNAPSHOT.jar
+java -jar target/erp-backend-*.jar
 ```
 
-### Usuario inicial (crear el primer ADMIN)
+## Configuración
 
-El endpoint de login requiere que exista al menos un usuario. Opciones:
+Variables (nombres de ejemplo):
 
-1) Consola H2 (rápido en dev):
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
+- `JWT_SECRET` (32+ bytes), `jwt.expiration-ms`
+- `ADMIN_EMAIL`, `ADMIN_PASSWORD` (semilla admin vía Flyway en `prod`)
 
-   - Abrir `http://localhost:8080/h2-console`
-   - JDBC URL: `jdbc:h2:mem:erpdb` | user: `sa` | password vacío
-   - Insertar un usuario con contraseña hasheada en BCrypt, por ejemplo:
+Credenciales y datos sensibles:
 
-   ```sql
-   INSERT INTO usuarios (username, password, email, role, enabled)
-   VALUES ('admin', '{BCRYPT_HASH_AQUI}', 'admin@example.com', 'ADMIN', TRUE);
-   ```
+- Por seguridad del proyecto no se pueden detallar las credenciales.
+- Configura las variables por entorno o gestor de secretos según el despliegue.
 
-   Genera el hash BCrypt de tu contraseña (usa una herramienta local o tu IDE; el encoder es `BCryptPasswordEncoder`).
+## Autenticación JWT
 
-2) Semilla por `data.sql` (pendiente):
+- Login: `POST /api/auth/login` con cuerpo `{"username":"<USUARIO>","password":"<CONTRASEÑA>"}`.
+- Usa el token recibido en `Authorization: Bearer <TOKEN>` para acceder a rutas protegidas.
+- Roles: rutas de administración usan `@PreAuthorize("hasRole('ADMIN')")`.
 
-   - Alternativa recomendada a futuro: añadir `src/main/resources/data.sql` solo en `dev` con el insert anterior.
-
-### Autenticación y uso básico
-
-1) Obtener token JWT:
+Ejemplos (placeholders):
 
 ```
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"TU_PASSWORD"}'
-```
+  -d '{"username":"<USUARIO>","password":"<CONTRASEÑA>"}'
 
-2) Usar el token en endpoints protegidos:
-
-```
 curl http://localhost:8080/api/productos \
-  -H "Authorization: Bearer TU_TOKEN"
+  -H "Authorization: Bearer <TOKEN>"
 ```
 
-## Endpoints principales (resumen)
+## Endpoints principales
 
 - `POST /api/auth/login` → `AuthResponse { token, expiresInMs }`
-- Productos (`/api/productos`)
-  - `GET /` (paginado), `GET /{id}`, `POST /` (ADMIN), `PUT /{id}` (ADMIN), `DELETE /{id}` (ADMIN)
-- Usuarios (`/api/usuarios`) — requiere `ADMIN`
-  - `GET /` (paginado), `GET /{id}`, `POST /`, `PUT /{id}`, `DELETE /{id}`
-- Ventas (`/api/ventas`)
-  - `GET /` (paginado), `GET /{id}`, `POST /facturar` → genera `Factura`
-- Facturas (`/api/facturas`)
-  - `GET /` (paginado), `GET /{id}`
+- Productos (`/api/productos`): `GET /`, `GET /{id}`, `POST /` (ADMIN), `PUT /{id}` (ADMIN), `DELETE /{id}` (ADMIN)
+- Usuarios (`/api/usuarios`, ADMIN): `GET /`, `GET /{id}`, `POST /`, `PUT /{id}`, `DELETE /{id}`
+- Ventas (`/api/ventas`): `GET /`, `GET /{id}`, `POST /facturar`
+- Facturas (`/api/facturas`): `GET /`, `GET /{id}`
 
-Swagger documenta esquemas y ejemplos: `GET /swagger-ui.html`.
+La seguridad global permite sin token: `/api/auth/**`, `/swagger-ui/**`, `/v3/api-docs/**`, `/h2-console/**` (ver `backend/src/main/java/com/example/erp/config/SecurityConfig.java`).
 
-## Estrategia de impuestos
+## Base de datos y migraciones
 
-Implementación con Strategy Pattern:
+- `dev`: H2 en memoria (sin persistencia) para iteración rápida.
+- `prod`: PostgreSQL con migraciones Flyway en `backend/database/migrations` (incluye semilla de admin mediante placeholders).
 
-- `ImpuestoStrategy` → interfaz de cálculo
-- `ImpuestoNormalStrategy` (19%) y `ImpuestoExentoStrategy` (0%)
-- `CalculoImpuestoService` selecciona la estrategia según `producto.exentoImpuesto`
-
-## Perfiles y configuración
-
-- `dev`: H2 en memoria, Swagger y H2 console habilitados.
-- `prod`: usar base de datos real (ej. PostgreSQL), `JWT_SECRET` por variable de entorno, CORS restringido.
-- `test`: H2 en memoria, `application-test.properties` dedicado.
-
-## Docker (backend)
-
-1) Construir JAR:
-
-```
-cd backend
-mvn -DskipTests package
-```
-
-2) Construir imagen:
-
-```
-docker build -t erp-backend:latest -f backend/Dockerfile backend
-```
-
-3) Ejecutar contenedor:
-
-```
-docker run --rm -p 8080:8080 \
-  -e JWT_SECRET="cambia-este-secreto-de-32+bytes" \
-  erp-backend:latest
-```
-
-## Tests (backend)
+## Tests
 
 ```
 cd backend
 mvn test
 ```
 
-Incluye pruebas de servicios, repositorios, JWT y mapeos básicos.
+## Frontend
 
-## Frontend (estado actual y próximos pasos)
-
-El frontend es un esqueleto listo para completar. Actualmente contiene:
-
-- Entrada: `Punto de Entrada/index.html` y `main.jsx` con una AppShell mínima.
-- Estilos: `estilos/theme.css`, `estilos/globalStyles.css`.
-- Placeholders para rutas (`estructura/`), páginas (`paginas/`), componentes (`ComponentesdeUI/`), y servicios (`ServiciosAPI/`).
-- Archivos vacíos de configuración en `Config. y Dependencias/` (`package.json`, `vite.config.js`).
-
-Sugerencia de arranque con Vite + React:
+Esqueleto inicial con React + Vite listo para completar. Sugerencia rápida:
 
 ```
 cd frontend
-npm create vite@latest . -- --template react
 npm install
 npm run dev
 ```
 
-Luego integrar la estructura existente (estilos, páginas, componentes) y apuntar el cliente a `http://localhost:8080` para la API. Considerar almacenar el `API_BASE_URL` en `.env`.
+Configura `API_BASE_URL` del cliente según entorno.
 
-## Roadmap (proximamente)
+## Solución de problemas
 
-- Persistencia en PostgreSQL + migraciones con Flyway
-- Módulos adicionales: inventario, compras, contabilidad, RR.HH., CRM
-- Auditoría (createdAt, updatedAt), soft-delete
-- Observabilidad (actuators, logs estructurados)
-- CI/CD (GitHub Actions), calidad (linters, coverage thresholds)
-- Frontend completo: rutas protegidas, formularios, tablas y gráficos
+- 401/403: token ausente, inválido o sin rol requerido.
+- 500 al loguear en dev: crear usuario inicial; en `prod` verifica variables y conexión a DB.
+- `jwt.secret` debe tener 32+ bytes.
 
+## Contribución
+
+- Flujo sugerido: ramas por feature, commits atómicos y PR con contexto.
+
+## Licencia
+
+Este proyecto está licenciado bajo la licencia MIT. Ver `LICENSE`.
 
